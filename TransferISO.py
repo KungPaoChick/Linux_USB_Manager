@@ -45,4 +45,8 @@ class Transfer_iso:
             if iso.endswith('.iso'):
                 images.append(os.path.join(self.source, iso))
 
-        return images
+        if images == []:
+            print('[!] No new iso in source directory')
+            quit()
+        else:
+            return images
