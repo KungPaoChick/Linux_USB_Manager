@@ -32,7 +32,7 @@ class Images:
             'mvd': stringConvert().formatBytes(used_disk + total_size)
         }
         print(f"\nTotal Size: {fmt_total} | {data_disk['du']}")
-        print(f"Size if moved: {data_disk['mvd']}")
+        print(f"Disk Usage if moved: {data_disk['mvd']}")
 
         if (used_disk + total_size) >= total_disk:
             print('[!!] There is no sufficient space left')
@@ -60,7 +60,9 @@ class Images:
         distro_dict = {}
         for index, distro in enumerate(distributions, start=1):
             distro_dict[index] = distro
-            print(f'{index} - {os.path.split(distro)[-1]}')
+
+            distro_size = stringConvert().formatBytes(os.path.getsize(distro))
+            print(f'{index} - {os.path.split(distro)[-1]}, {distro_size}')
 
         try:
             select_delete = int(input('\nEnter the index of the distro you want to delete: '))
