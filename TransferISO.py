@@ -1,5 +1,3 @@
-# TODO: finish this by the end of July 1
-
 import os
 import shutil
 
