@@ -1,18 +1,18 @@
 import os
 import json
 import shutil
-from TransferISO import Transfer_iso
+from TransferISO import Manage_iso
 from Convert import stringConvert
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 
-class Count_Images:
+class Images:
 
     def check_new_iso(self):
         source_iso = os.path.join(os.path.expanduser('~'), 'Downloads')
         target = os.path.join(''.join(os.getcwd().split('scripts')), 'Distributions')
 
-        main_class = Transfer_iso(source_iso, target)
+        main_class = Manage_iso(source_iso, target)
         new_iso = main_class.get_new_iso()
 
         total_size = 0
@@ -49,6 +49,32 @@ class Count_Images:
             except KeyboardInterrupt:
                 print('\nStopped!')
 
+    def delete_distro(self):
+        source = os.path.join(''.join(os.getcwd().split('scripts')), 'Distributions')
+
+        distributions = []
+        for root, dirs, files in os.walk(source):
+            for f in files:
+                distributions.append(os.path.join(root, f))
+
+        distro_dict = {}
+        for index, distro in enumerate(distributions, start=1):
+            distro_dict[index] = distro
+            print(f'{index} - {os.path.split(distro)[-1]}')
+
+        try:
+            select_delete = int(input('\nEnter the index of the distro you want to delete: '))
+
+            if select_delete in distro_dict:
+                target = distro_dict[select_delete]
+                Manage_iso(source, target).delete(target)
+            else:
+                print('\nAbort!')
+        except KeyboardInterrupt:
+            print('\nStopped!')
+                
+
+
     def count_iso(self):
         images, bases = [], []
         source = JSON_Data().read_json()
@@ -64,7 +90,7 @@ class Count_Images:
                 else:
                     print(f"{os.path.join(root, file)} is not an image file")
     
-        Count_Images().mk_inventory(images, bases) 
+        Images().mk_inventory(images, bases) 
         for option in source['config']:
             if option['show-images']:
                 for image in images:
@@ -121,12 +147,18 @@ if __name__ == '__main__':
     parser.add_argument('--check-downloads',
                         action='store_true',
                         help='Checks Downloads directory for new iso downloads')
+
+    parser.add_argument('--delete-iso',
+                        action='store_true',
+                        help='Deletes a distro/iso image')
     
     args = parser.parse_args()
     if args.check_downloads:
-        Count_Images().check_new_iso()
+        Images().check_new_iso()
+    elif args.delete_iso:
+        Images().delete_distro()
     else:
         if os.path.exists(os.path.join(os.getcwd(), 'config.json')):
-            Count_Images().count_iso()
+            Images().count_iso()
         else:
             print("Script cannot cooperate without the following dependency: config.json")

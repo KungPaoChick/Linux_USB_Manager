@@ -2,7 +2,7 @@ import os
 import shutil
 
 
-class Transfer_iso:
+class Manage_iso:
     
     def __init__(self, source, target):
         self.source = source
@@ -39,12 +39,37 @@ class Transfer_iso:
     def get_new_iso(self):
         # goes through the source directory; gets all .iso images
         images = []
-        for iso in os.listdir(self.source):
-            if iso.endswith('.iso'):
-                images.append(os.path.join(self.source, iso))
+        for root, dirs, files in os.walk(self.source):
+            for f in files:
+                if f.endswith('.iso'):
+                    images.append(os.path.join(self.source, f))
+
+        # i dont think this method of looking for iso images
+        # is efficient when the image is in a folder
+        #for iso in os.listdir(self.source):
+        #    if iso.endswith('.iso'):
+        #        images.append(os.path.join(self.source, iso))
 
         if images == []:
             print('[!] No new iso in source directory')
             quit()
         else:
             return images
+
+    def delete(self, distribution):
+        # for the delete function, all Distributions from all
+        # the folders in the target directory will be listed down,
+        # assigned with an index. Select that index,
+        # and that distribution will be deleted
+        
+        fmt_path = os.path.split(distribution)[0]
+        fmt_iso = os.path.split(distribution)[1]
+        print(f'[!] Deleting: {fmt_iso} from {fmt_path}...')
+
+        # deletes the iso image selected
+        os.remove(distribution)
+
+        if not os.path.exists(distribution):
+            print(f'[*] {fmt_iso} has been successfully deleted!\n')
+        else:
+            print(f'[!!] {fmt_iso} refused to be deleted!\n')
