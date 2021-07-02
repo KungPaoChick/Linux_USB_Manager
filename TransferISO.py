@@ -32,7 +32,7 @@ class Transfer_iso:
                 shutil.move(distribution, os.path.join(self.target, base_set[select_base]))
 
                 if fmt_path in os.listdir(os.path.join(self.target, base_set[select_base])):
-                    print(f'[*] {fmt_path} has been successfully moved!\n\n')
+                    print(f'[*] {fmt_path} has been successfully moved!\n')
             else:
                 print('\nAbort!')
         except KeyboardInterrupt:

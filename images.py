@@ -15,7 +15,9 @@ class Count_Images:
         new_iso = main_class.get_new_iso()
 
         for image in new_iso:
-            print(f"[*] Found: {os.path.split(image)[-1]}")
+            fmt_iso = os.path.split(image)[-1]
+            size = stringConvert().formatBytes(os.path.getsize(image))
+            print(f"[*] Found: {fmt_iso}, {size}")
         
         try:
             iso_len = len(new_iso)
