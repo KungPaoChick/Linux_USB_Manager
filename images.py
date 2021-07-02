@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 from TransferISO import Transfer_iso
 from Convert import stringConvert
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
@@ -14,22 +15,39 @@ class Count_Images:
         main_class = Transfer_iso(source_iso, target)
         new_iso = main_class.get_new_iso()
 
+        total_size = 0
         for image in new_iso:
             fmt_iso = os.path.split(image)[-1]
-            size = stringConvert().formatBytes(os.path.getsize(image))
-            print(f"[*] Found: {fmt_iso}, {size}")
-        
-        try:
-            iso_len = len(new_iso)
-            confirm_move = input(f'\nMove {iso_len} iso image{stringConvert().plural_s(iso_len)}? ')
+            size = os.path.getsize(image)
+            
+            total_size += size
+            print(f"[*] Found: {fmt_iso}, {stringConvert().formatBytes(size)}")
 
-            if confirm_move == 'y' or confirm_move == 'Y':
-                for image in new_iso:
-                    main_class.move(image)
-            else:
-                print('\nAbort!')
-        except KeyboardInterrupt:
-            print('\nStopped!')
+        fmt_total = stringConvert().formatBytes(total_size)
+        total_disk, used_disk, free_disk = shutil.disk_usage('/')
+        
+        data_disk = {
+            'du': f'Disk Usage: {stringConvert().formatBytes(used_disk)} / {stringConvert().formatBytes(total_disk)}',
+            'fs': f'Free Space: {stringConvert().formatBytes(free_disk)}',
+            'mvd': stringConvert().formatBytes(used_disk + total_size)
+        }
+        print(f"\nTotal Size: {fmt_total} | {data_disk['du']}")
+        print(f"Size if moved: {data_disk['mvd']}")
+
+        if (used_disk + total_size) >= total_disk:
+            print('[!!] There is no sufficient space left')
+        else:
+            try:
+                iso_len = len(new_iso)
+                confirm_move = input(f'\nMove {iso_len} iso image{stringConvert().plural_s(iso_len)}? ')
+    
+                if confirm_move == 'y' or confirm_move == 'Y':
+                    for image in new_iso:
+                        main_class.move(image)
+                else:
+                    print('\nAbort!')
+            except KeyboardInterrupt:
+                print('\nStopped!')
 
     def count_iso(self):
         images, bases = [], []
