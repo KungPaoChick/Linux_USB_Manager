@@ -8,7 +8,7 @@ class Manage_iso:
         self.source = source
         self.target = target
 
-    def move(self, distribution):
+    def move(self, distributions):
         # the source directory is always the Downloads folder
         # and the target directory would be the Distributions
         # but there would be a user input for the base distro
@@ -20,19 +20,27 @@ class Manage_iso:
             print(f'{index} - {base}')
 
         try:
-            # user can select which directory the image should be transferred
-            fmt_path = os.path.split(distribution)[-1]
-            select_base = int(input(f'\nEnter index to move "{fmt_path}" to its respectful base: '))
+            # user can select which directory the image should be transferred            
+            assign_data_path = {}
+            for distro in distributions:            
+                fmt_path = os.path.split(distro)[-1]
+                select_base = int(input(f'\nEnter index to move "{fmt_path}" to its respectful base: '))
 
-            # after selecting, if the input is valid; the image gets moved
-            if select_base in base_set:
-                print(f'[!] Moving: {fmt_path} to {base_set[select_base]}...')
-                shutil.move(distribution, os.path.join(self.target, base_set[select_base]))
+                if select_base in base_set:
+                    assign_data_path[distro] = os.path.join(self.target, base_set[select_base])
+                else:
+                    print('\nAbort!')
 
-                if fmt_path in os.listdir(os.path.join(self.target, base_set[select_base])):
-                    print(f'[*] {fmt_path} has been successfully moved!\n')
-            else:
-                print('\nAbort!')
+            for path in assign_data_path:
+                fmt_distro = os.path.split(path)[-1]
+                fmt_target = os.path.split(assign_data_path[path])[-1]
+                print(f'[!] Moving: {fmt_distro} to {fmt_target}...')
+                
+                shutil.move(path, assign_data_path[path])
+                if fmt_distro in os.listdir(os.path.join(self.target, fmt_target)):
+                    print(f'[*] {fmt_distro} has been successfully moved!\n')
+                else:
+                    print(f'[!!] {fmt_distro} refused to move!\n')
         except KeyboardInterrupt:
             print('\nStopped!')
 

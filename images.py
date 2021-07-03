@@ -24,7 +24,13 @@ class Images:
             print(f"[*] Found: {fmt_iso}, {stringConvert().formatBytes(size)}")
 
         fmt_total = stringConvert().formatBytes(total_size)
-        total_disk, used_disk, free_disk = shutil.disk_usage('/')
+        platform_os = {
+            'windows': shutil.disk_usage('/'),
+            'posix': shutil.disk_usage(input('\n[!] Enter (root) drive path: '))
+        }
+
+        if os.name in platform_os:
+            total_disk, used_disk, free_disk = platform_os[os.name]
         
         data_disk = {
             'du': f'Disk Usage: {stringConvert().formatBytes(used_disk)} / {stringConvert().formatBytes(total_disk)}',
@@ -41,9 +47,8 @@ class Images:
                 iso_len = len(new_iso)
                 confirm_move = input(f'\nMove {iso_len} iso image{stringConvert().plural_s(iso_len)}? ')
     
-                if confirm_move == 'y' or confirm_move == 'Y':
-                    for image in new_iso:
-                        main_class.move(image)
+                if confirm_move == 'y' or confirm_move == 'Y':    
+                    main_class.move(new_iso)
                 else:
                     print('\nAbort!')
             except KeyboardInterrupt:
