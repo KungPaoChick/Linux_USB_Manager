@@ -62,6 +62,7 @@ class Images:
             for f in files:
                 distributions.append(os.path.join(root, f))
 
+        distributions.sort()
         distro_dict = {}
         for index, distro in enumerate(distributions, start=1):
             distro_dict[index] = distro
@@ -74,14 +75,24 @@ class Images:
 
             if select_delete in distro_dict:
                 target = distro_dict[select_delete]
-                Manage_iso(source, target).delete(target)
+
+                fmt_target = os.path.split(target)[-1]
+                target_size = stringConvert().formatBytes(os.path.getsize(target))
+                
+                try:
+                    confirm_delete = str(input(f'[!] Deleting "{fmt_target}" will free "{target_size}" of storage, continue? '))
+                    if confirm_delete == 'y' or confirm_delete == 'Y':
+                        Manage_iso(source, target).delete(target)
+                    else:
+                        print('\nAbort!')
+                except KeyboardInterrupt:
+                    print('\nStopped!')
+
             else:
                 print('\nAbort!')
         except KeyboardInterrupt:
             print('\nStopped!')
                 
-
-
     def count_iso(self):
         images, bases = [], []
         source = JSON_Data().read_json()
