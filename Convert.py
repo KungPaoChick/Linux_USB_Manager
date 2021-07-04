@@ -10,4 +10,4 @@ class stringConvert:
         return f'{round(size_bytes, 2)}{power_labels[n]}b'
 
     def plural_s(self, v):
-        return 's' if not abs(v) < 1 else ''
+        return 's' if not abs(v) <= 1 else ''
