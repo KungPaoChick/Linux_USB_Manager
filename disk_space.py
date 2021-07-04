@@ -2,16 +2,15 @@ import os
 import shutil
 from Convert import stringConvert
 
-
 def disk_space():
+    cv = stringConvert()
     total, used, free = shutil.disk_usage(
         '/' if not os.name == 'posix' else str(input('\nEnter (root) USB drive path: ')))
 
     data_disk = {
-            'du': f'Disk Usage: {stringConvert().formatBytes(used)} / {stringConvert().formatBytes(total)}',
-            'fs': f'Free Space: {stringConvert().formatBytes(free)}'
+            'du': f'Disk Usage: {cv.formatBytes(used)} / {cv.formatBytes(total)}',
+            'fs': f'Free Space: {cv.formatBytes(free)}'
         }
-
     print(f"\n{data_disk['du']} | {data_disk['fs']}")
 
 if __name__ == '__main__':
