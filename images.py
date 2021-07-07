@@ -25,7 +25,7 @@ class Images:
 
         fmt_total = stringConvert().formatBytes(total_size)
         total_disk, used_disk, free_disk = shutil.disk_usage(
-            '/' if not os.name == 'posix' else str(input('\n[!] Enter (root) USB drive path: ')))
+            '/' if not os.name == 'posix' else ''.join(os.getcwd().split('scripts')))
 
         data_disk = {
             'du': f'Disk Usage: {stringConvert().formatBytes(used_disk)} / {stringConvert().formatBytes(total_disk)}',

@@ -5,7 +5,7 @@ from Convert import stringConvert
 def disk_space():
     cv = stringConvert()
     total, used, free = shutil.disk_usage(
-        '/' if not os.name == 'posix' else str(input('\nEnter (root) USB drive path: ')))
+        '/' if not os.name == 'posix' else ''.join(os.getcwd().split('scripts')))
 
     data_disk = {
             'du': f'Disk Usage: {cv.formatBytes(used)} / {cv.formatBytes(total)}',
