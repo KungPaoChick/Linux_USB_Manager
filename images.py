@@ -129,7 +129,8 @@ class Images:
                     iso_dataset[iso] = stringConvert().formatBytes(
                     os.path.getsize(os.path.join(base[0], base[1], iso)))
                 inventory['contents'].append({
-                    base[1]: {'total_size': stringConvert().formatBytes(folder_size),
+                    base[1]: {'total_iso': len(iso_dataset),
+                              'total_size': stringConvert().formatBytes(folder_size),
                               'iso_images': iso_dataset}
                 })
         inventory['info'].append({
